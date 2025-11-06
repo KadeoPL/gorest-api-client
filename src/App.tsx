@@ -66,13 +66,15 @@ function App() {
             ))}
           </div>
         )}
-        {users && users.length > 0 && (
+        {users && users.length > 0 && error ? (
           <Pagination
             fetchUsers={fetchUsers}
             page={page}
             hasNext={hasNext}
             query={query}
           />
+        ) : (
+          <div>No results</div>
         )}
       </div>
     </div>

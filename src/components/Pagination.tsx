@@ -19,7 +19,7 @@ export default function Pagination({
         Prev
       </Button>
 
-      <span className="text-sm text-muted-foreground">Strona {page}</span>
+      <span className="text-sm text-muted-foreground">Page {page}</span>
 
       <Button onClick={() => fetchUsers(query, page + 1)} disabled={!hasNext}>
         Next
