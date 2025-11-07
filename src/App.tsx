@@ -5,7 +5,7 @@ import UserItem from "./components/UserItem";
 import SearchBar from "./components/SearchBar";
 import { Spinner } from "./components/ui/spinner";
 import Pagination from "./components/Pagination";
-import { getUserDetails } from "./api/users";
+import EditUserModal from "./components/EditUserModal";
 
 type fetchStatus = "idle" | "fetching";
 
@@ -16,6 +16,8 @@ function App() {
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(true);
   const [query, setQuery] = useState("");
+  const [userToEdit, setUserToEdit] = useState<userProps | null>();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const fetchUsers = async (query?: string, pageNumber: number = 1) => {
     setStatus("fetching");
@@ -37,8 +39,9 @@ function App() {
     }
   };
 
-  const handleEdit = (id: number) => {
-    getUserDetails(id);
+  const handleEdit = (user: userProps) => {
+    setUserToEdit(user);
+    setIsModalOpen(true);
   };
 
   useEffect(() => {
@@ -66,17 +69,27 @@ function App() {
             ))}
           </div>
         )}
-        {users && users.length > 0 && error ? (
+
+        {status !== "fetching" && (users?.length ?? 0) === 0 && (
+          <div>No results</div>
+        )}
+
+        {users && users.length > 0 && (
           <Pagination
             fetchUsers={fetchUsers}
             page={page}
             hasNext={hasNext}
             query={query}
           />
-        ) : (
-          <div>No results</div>
         )}
       </div>
+
+      <EditUserModal
+        open={isModalOpen}
+        user={userToEdit ?? null}
+        onOpenChange={setIsModalOpen}
+        onSucess={setIsModalOpen}
+      />
     </div>
   );
 }

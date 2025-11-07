@@ -1,4 +1,5 @@
 import apiClient from "./apiClient";
+import type { userProps } from "@/types/userProps";
 
 export default async function getUsers(query?: string, page: number = 1) {
   try {
@@ -11,16 +12,17 @@ export default async function getUsers(query?: string, page: number = 1) {
     });
     return response.data;
   } catch (error) {
+    console.error(error);
     return null;
   }
 }
 
-export async function getUserDetails(id: number) {
+export async function saveUserDetail(data: userProps) {
   try {
-    const response = await apiClient.get(`/users/${id}`);
-    console.log(response.data);
-    return response.data;
+    await apiClient.patch(`/users/${data.id}`, data);
+    return true;
   } catch (error) {
-    return null;
+    console.error(error);
+    return false;
   }
 }

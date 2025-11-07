@@ -11,17 +11,11 @@ import { Edit } from "lucide-react";
 import type { userProps } from "@/types/userProps";
 
 interface UserItemProps extends userProps {
-  onEdit: (id: number) => void;
+  onEdit: (user: userProps) => void;
 }
 
-export default function UserItem({
-  id,
-  name,
-  email,
-  gender,
-  status,
-  onEdit,
-}: UserItemProps) {
+export default function UserItem(props: UserItemProps) {
+  const { id, name, email, gender, status, onEdit } = props;
   return (
     <Item key={id} variant="outline">
       <ItemContent>
@@ -49,7 +43,7 @@ export default function UserItem({
       <ItemActions>
         <button
           className="flex items-center gap-1 hover:text-muted-foreground"
-          onClick={() => onEdit(id)}
+          onClick={() => onEdit(props)}
         >
           <Edit size={16} /> Edit
         </button>
