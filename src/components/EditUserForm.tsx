@@ -34,7 +34,7 @@ const userSchema = z.object({
 });
 
 export default function EditUserForm({ user }: { user: userProps }) {
-  const { closeModal } = useModal();
+  const { closeModal, succesUpdate } = useModal();
 
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -59,6 +59,7 @@ export default function EditUserForm({ user }: { user: userProps }) {
 
     if (result) {
       toast.success("User details updated successfully");
+      succesUpdate();
       closeModal();
     } else {
       toast.error("Failed to update user details");

@@ -6,6 +6,8 @@ interface ModalContextType {
   userToEdit: userProps | null;
   openModal: (user: userProps) => void;
   closeModal: () => void;
+  isUsersUpdate: boolean;
+  succesUpdate: () => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -13,10 +15,12 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined);
 export function ModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userToEdit, setUserToEdit] = useState<userProps | null>(null);
+  const [isUsersUpdate, setIsUserUpdate] = useState<boolean>(false);
 
   const openModal = (user: userProps) => {
     setUserToEdit(user);
     setIsOpen(true);
+    setIsUserUpdate(false);
   };
 
   const closeModal = () => {
@@ -24,9 +28,20 @@ export function ModalProvider({ children }: { children: ReactNode }) {
     setIsOpen(false);
   };
 
+  const succesUpdate = () => {
+    setIsUserUpdate(true);
+  };
+
   return (
     <ModalContext.Provider
-      value={{ isOpen, userToEdit, openModal, closeModal }}
+      value={{
+        isOpen,
+        userToEdit,
+        openModal,
+        closeModal,
+        isUsersUpdate,
+        succesUpdate,
+      }}
     >
       {children}
     </ModalContext.Provider>
