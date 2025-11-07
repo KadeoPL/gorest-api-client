@@ -6,6 +6,7 @@ import SearchBar from "./components/SearchBar";
 import { Spinner } from "./components/ui/spinner";
 import Pagination from "./components/Pagination";
 import EditUserModal from "./components/EditUserModal";
+import { ModalProvider } from "./context/ModalContext";
 
 type fetchStatus = "idle" | "fetching";
 
@@ -16,8 +17,6 @@ function App() {
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(true);
   const [query, setQuery] = useState("");
-  const [userToEdit, setUserToEdit] = useState<userProps | null>();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const fetchUsers = async (query?: string, pageNumber: number = 1) => {
     setStatus("fetching");
@@ -39,58 +38,50 @@ function App() {
     }
   };
 
-  const handleEdit = (user: userProps) => {
-    setUserToEdit(user);
-    setIsModalOpen(true);
-  };
-
   useEffect(() => {
     fetchUsers();
   }, []);
 
   return (
-    <div className="w-svw min-h-svh place-content-center">
-      <div className="max-w-[800px] mx-auto px-4 my-20">
-        <SearchBar
-          onSearch={(value) => {
-            setQuery(value);
-            fetchUsers(value, 1);
-          }}
-        />
-
-        {error && <div>{error}</div>}
-
-        {status === "fetching" ? (
-          <Spinner />
-        ) : (
-          <div className="space-y-5">
-            {users?.map((user, index) => (
-              <UserItem {...user} key={index} onEdit={handleEdit} />
-            ))}
-          </div>
-        )}
-
-        {status !== "fetching" && (users?.length ?? 0) === 0 && (
-          <div>No results</div>
-        )}
-
-        {users && users.length > 0 && (
-          <Pagination
-            fetchUsers={fetchUsers}
-            page={page}
-            hasNext={hasNext}
-            query={query}
+    <ModalProvider>
+      <div className="w-svw min-h-svh place-content-center">
+        <div className="max-w-[800px] mx-auto px-4 my-20">
+          <SearchBar
+            onSearch={(value) => {
+              setQuery(value);
+              fetchUsers(value, 1);
+            }}
           />
-        )}
-      </div>
 
-      <EditUserModal
-        open={isModalOpen}
-        user={userToEdit ?? null}
-        onOpenChange={setIsModalOpen}
-        onSucess={setIsModalOpen}
-      />
-    </div>
+          {error && <div>{error}</div>}
+
+          {status === "fetching" ? (
+            <Spinner />
+          ) : (
+            <div className="space-y-5">
+              {users?.map((user, index) => (
+                <UserItem {...user} key={index} />
+              ))}
+            </div>
+          )}
+
+          {status !== "fetching" && (users?.length ?? 0) === 0 && (
+            <div>No results</div>
+          )}
+
+          {users && users.length > 0 && (
+            <Pagination
+              fetchUsers={fetchUsers}
+              page={page}
+              hasNext={hasNext}
+              query={query}
+            />
+          )}
+        </div>
+
+        <EditUserModal />
+      </div>
+    </ModalProvider>
   );
 }
 

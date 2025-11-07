@@ -7,15 +7,13 @@ import {
 } from "@/components/ui/item";
 import { Badge } from "./ui/badge";
 import { Edit } from "lucide-react";
-
 import type { userProps } from "@/types/userProps";
+import { useModal } from "@/context/ModalContext";
 
-interface UserItemProps extends userProps {
-  onEdit: (user: userProps) => void;
-}
+export default function UserItem(props: userProps) {
+  const { id, name, email, gender, status } = props;
+  const { openModal } = useModal();
 
-export default function UserItem(props: UserItemProps) {
-  const { id, name, email, gender, status, onEdit } = props;
   return (
     <Item key={id} variant="outline">
       <ItemContent>
@@ -43,7 +41,7 @@ export default function UserItem(props: UserItemProps) {
       <ItemActions>
         <button
           className="flex items-center gap-1 hover:text-muted-foreground"
-          onClick={() => onEdit(props)}
+          onClick={() => openModal(props)}
         >
           <Edit size={16} /> Edit
         </button>

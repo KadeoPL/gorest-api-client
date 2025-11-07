@@ -21,6 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { saveUserDetail } from "@/api/users";
+import { toast } from "sonner";
+import { useModal } from "@/context/ModalContext";
 
 const userSchema = z.object({
   name: z.string().min(3, { message: "Name must have at least 3 characters" }),
@@ -31,7 +33,9 @@ const userSchema = z.object({
   status: z.boolean(),
 });
 
-export default function EditUserForm(user: userProps) {
+export default function EditUserForm({ user }: { user: userProps }) {
+  const { closeModal } = useModal();
+
   const form = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -54,9 +58,10 @@ export default function EditUserForm(user: userProps) {
     const result = await saveUserDetail(data);
 
     if (result) {
-      console.log("OK");
+      toast.success("User details updated successfully");
+      closeModal();
     } else {
-      console.log("Failed");
+      toast.error("Failed to update user details");
     }
   }
 
@@ -98,7 +103,9 @@ export default function EditUserForm(user: userProps) {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue>Select gender</SelectValue>
+                    <SelectValue>
+                      {field.value === "male" ? "Male" : "Female"}
+                    </SelectValue>
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>

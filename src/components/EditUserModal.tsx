@@ -1,4 +1,3 @@
-import type { userProps } from "@/types/userProps";
 import {
   Dialog,
   DialogContent,
@@ -7,22 +6,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import EditUserForm from "./EditUserForm";
+import { useModal } from "@/context/ModalContext";
 
-interface EditUserModalProps {
-  open: boolean;
-  user: userProps | null;
-  onOpenChange: (open: boolean) => void;
-  onSucess: (open: boolean) => void;
-}
-
-export default function EditUserModal({
-  open,
-  user,
-  onOpenChange,
-}: EditUserModalProps) {
+export default function EditUserModal() {
+  const { isOpen, closeModal, userToEdit } = useModal();
   return (
-    user && (
-      <Dialog open={open} onOpenChange={onOpenChange}>
+    userToEdit && (
+      <Dialog open={isOpen} onOpenChange={closeModal}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit user</DialogTitle>
@@ -31,7 +21,7 @@ export default function EditUserModal({
             </DialogDescription>
           </DialogHeader>
           <div>
-            <EditUserForm {...user} />
+            <EditUserForm user={userToEdit} />
           </div>
         </DialogContent>
       </Dialog>
